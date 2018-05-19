@@ -52,56 +52,56 @@ var User = function(object) {
 
 console.log(stringToObjects(UserString));
 
-var UsersCollection = function() {
-  this.users = [];
+var UsersCollection = function(user) {
+  this.users = [].concat(user);
 
-  this.add = function () {
+  this.add = function(payload) {
     this.users.push(payload);
+    return this.users;
   };
-  this.remove = function(Object) {
-    return User.splice[User.indexOf(Object)];
+  this.remove = function(payload) {
+    this.users.splice(this.users.indexOf(payload), 1);
+    return this.users;
   };
-  this.addAll = function(usersArray) {
-    for (i = 0; i < usersArray.length; i++) {
-      this.User.push(usersArray[i]);
+  this.addAll = function(payload) {
+    for (i = 0; i < payload.length; i++) {
+      this.users.push(payload[i]);
     }
-    return User;
+    return this.users;
   };
   this.clear = function() {
-    for (i = 0; i < User.length; i++) {
-      this.User.pop(User[i]);
-    }
-    return User;
+    this.users = [];
+    return this.users;
   };
   this.findBy = function(propertyName, propertyValue) {
 
   };
-  this.sortBy = function(propertyName, order) {
+  this.sortBy = function (propertyName, order) {
 
-  };
-};
-
-var UserCollection = function([user]){
-  this.users = [];
-
-  this.add = function (payload) {
-    this.users.push(payload);
   };
 };
 
 user1 = new User({
   firstName: 'Volodya',
-  lastName: 'Turbo',
-  email: 'robot@gmail.com',
+  lastName: 'Pistolet',
+  email: 'vova@gmail.com',
   balance: '100'
 });
 
 user2 = new User({
   firstName: 'Valera',
   lastName: 'Raketa',
-  email: 'motor@gmail.com',
+  email: 'valet@gmail.com',
   balance: '503'
 });
 
-var NewCollection = new UsersCollection.add(user1);
-console.log(NewCollection);
+var NewCollection = new UsersCollection(user1);
+console.log(NewCollection.add(user2));
+console.log(NewCollection.remove(user1));
+console.log(NewCollection.addAll(stringToObjects(UserString)));
+console.log(NewCollection.clear());
+NewCollection.add(user1);
+NewCollection.add(user2);
+NewCollection.addAll(stringToObjects(UserString));
+console.log(NewCollection.add(user2));
+//console.log(NewCollection.findBy('lastName', 'Raketa'));

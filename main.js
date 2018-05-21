@@ -2,21 +2,14 @@ var UserString = 'firstName=John, lastName=Doe, email=example@gmail.com, balance
   'firstName=Test, lastName=Test, email=admin@gmail.com, balance=1000';
 
 var stringToObjects = function(inputString) {
-  var DirtyObject;
-  var ObjectsArray = [];
   var ResultArray = [];
   var UserObject;
-  var i;
-  inputString.split(';').map(function(userAtrributesString){
-    DirtyObject = {};
-    userAtrributesString.split(',').reduce(function (result, keyValueString) {
+  var ObjectsArray = inputString.split(';').map(function(userAtrributesString){
+    return userAtrributesString.split(',').reduce(function (result, keyValueString) {
       var keyAndValue = keyValueString.split('=');
-      for (i = 0; i < keyAndValue.length; i++) {
-        keyAndValue[i] = keyAndValue[i].trim();
-      }
-      DirtyObject[keyAndValue[0]] = keyAndValue[1];
+      result[keyAndValue[0].trim()] = keyAndValue[1].trim();
+      return result;
     }, {});
-    ObjectsArray.push(DirtyObject);
   });
   for (i = 0; i < ObjectsArray.length; i++) {
     UserObject = new User(ObjectsArray[i]);
@@ -50,34 +43,73 @@ var User = function(object) {
   };
 };
 
-console.log(stringToObjects(UserString));
-
-var UsersCollection = function(user) {
-  this.users = [].concat(user);
+var UsersCollection = function(initialUsers) {
+  if(initialUsers) {
+    this.users = [].concat(initialUsers);
+  } else {
+    this.users = [];
+  }
 
   this.add = function(payload) {
     this.users.push(payload);
-    return this.users;
+    return this;
   };
+
   this.remove = function(payload) {
-    this.users.splice(this.users.indexOf(payload), 1);
-    return this.users;
+    if(this.users.indexOf(payload) >= 0) {
+      this.users.splice(this.users.indexOf(payload), 1);
+      return this;
+    }
   };
+
   this.addAll = function(payload) {
-    for (i = 0; i < payload.length; i++) {
+    for (var i = 0; i < payload.length; i++) {
       this.users.push(payload[i]);
     }
-    return this.users;
+    return this;
   };
+
   this.clear = function() {
     this.users = [];
-    return this.users;
+    return this;
   };
+
   this.findBy = function(propertyName, propertyValue) {
-
+    this.users = this.users.filter(function(object) {
+      for (propertyName in object) {
+        if (object[propertyName] === propertyValue) {
+          return true;
+        }
+      }
+    });
+    return this;
   };
-  this.sortBy = function (propertyName, order) {
 
+  this.sortBy = function (propertyName, order) {
+    var minObject;
+    var maxObject;
+    if (order === 'desc') {
+      for (var i = 0; i < this.users.length - 1; i++) {
+        for (var j = 0; j < this.users.length - i - 1; j++) {
+          if (+(this.users[j][propertyName]) < +(this.users[j + 1][propertyName])) {
+            maxObject = this.users[j + 1];
+            this.users[j + 1] = this.users[j];
+            this.users[j] = maxObject;
+          }
+        }
+      }
+    } else if (order === 'asc') {
+      for (i = 0; i < this.users.length - 1; i++) {
+        for (j = 0; j < this.users.length - i - 1; j++) {
+          if (+(this.users[j][propertyName]) > +(this.users[j + 1][propertyName])) {
+            minObject = this.users[j + 1];
+            this.users[j + 1] = this.users[j];
+            this.users[j] = minObject;
+          }
+        }
+      }
+    }
+    return this;
   };
 };
 
@@ -95,13 +127,22 @@ user2 = new User({
   balance: '503'
 });
 
-var NewCollection = new UsersCollection(user1);
-console.log(NewCollection.add(user2));
-console.log(NewCollection.remove(user1));
-console.log(NewCollection.addAll(stringToObjects(UserString)));
-console.log(NewCollection.clear());
-NewCollection.add(user1);
+//console.log(stringToObjects(UserString));
+var NewCollection = new UsersCollection();
+/*console.log(NewCollection.users);
 NewCollection.add(user2);
+console.log(NewCollection.users);
+NewCollection.remove(user1);
+console.log(NewCollection.users);
 NewCollection.addAll(stringToObjects(UserString));
-console.log(NewCollection.add(user2));
-//console.log(NewCollection.findBy('lastName', 'Raketa'));
+console.log(NewCollection.users);
+NewCollection.clear();
+console.log(NewCollection.users);*/
+NewCollection.add(user1).add(user2).add(user2).addAll(stringToObjects(UserString)).add(user1).add(user2);
+console.log(NewCollection.users);
+/*NewCollection.findBy('firstName', 'Volodya');
+console.log(NewCollection.users);*/
+//NewCollection.sortBy('balance', 'asc');
+//console.log(NewCollection.users);
+NewCollection.sortBy('balance', 'desc');
+console.log(NewCollection.users);

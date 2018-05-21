@@ -1,0 +1,33 @@
+1. Пользователь вводит строку вида:
+  'firstName = John, email=example@gmail.com, balance=300; firstName=Test, lastName=Test, email=admin@gmail.com, balance=1000';
+
+2. Создать класс User который отражает пользователя, то есть свойства firstName, lastName, email, balance
+Для этого класса реализовать метод isValid(), который проверяет корректность введенных свойств:
+  - firstName, lastName - непустая строка
+- email - непустая строка, которая содержит символ @
+      - balance - корректное число
+
+3. Разобрать строку, так, чтобы на выходе получился массив объектов класса User;
+Массив должен содержать только корректные объекты, то есть те, для которых .isValid() === true
+
+4. Реализовать класс UsersCollection с методами:
+  - add(user) - добавляет указанный объект
+- remove(user) - удаляет указаный объект и все его копии (ссылки)
+- addAll(usersArray) - добавляет все указанные объекты в коллекцию существующих
+- clear() - очищает коллекцию
+- findBy(propertyName, propertyValue) - возвращает массив, в котором все объекты у которых есть свойство propertyName со значением
+propertyValue.
+
+  Например usersCollection.find('firstName', 'John') должен вернуть все объекты у которых свойство firstName имеет значение 'John'
+
+- sortBy(propertyName, order) - сортирует все объекты по указанному полю в порядке возрастания или убывания
+и возвращает отсортированные объекты, например:
+
+usersCollection.sortBy('balance', 'asc'); - сортирует возрастанию
+usersCollection.sortBy('balance', 'desc'); - сортирует убыванию
+
+Методы add, remove, addAll, clear должны быть chainable, то есть их можно вызывать по цепочке
+usersCollection.add(user1).add(user2).remove(user1).add(user3).clear();
+
+5. создать объект класса UsersCollection, добавить в него все объекты из пункта 3
+и привести примеры работы каждого из методов

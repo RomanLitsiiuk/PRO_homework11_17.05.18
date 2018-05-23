@@ -38,16 +38,16 @@ var User = function(attributes, validationSchema) {
 };
 
 user1 = new User({
-  firstName: 'Volodya',
-  lastName: 'Pistolet',
+  firstName: 'Vladimir',
+  lastName: 'Marchenko',
   email: 'vova@gmail.com',
   balance: '100'
 });
 
 user2 = new User({
-  firstName: 'Valera',
-  lastName: 'Raketa',
-  email: 'valetgmail.com',
+  firstName: 'Andrey',
+  lastName: 'Sahno',
+  email: 'andy@gmail.com',
   balance: '503'
 });
 
@@ -148,7 +148,7 @@ NewCollection.clear();
 console.log(NewCollection.users);
 NewCollection.add(user1).add(user2).add(user2).addAll(CheckedArray).add(user1).add(user2);
 console.log(NewCollection.users);
-NewCollection.findBy('lastName', 'Raketa');
+NewCollection.findBy('lastName', 'Sahno');
 console.log(NewCollection.users);
 NewCollection.sortBy('balance', 'asc');
 console.log(NewCollection.users);

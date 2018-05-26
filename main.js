@@ -1,4 +1,4 @@
-var UserString = 'firstName = John, email=example@gmail.com, balance=300; firstName=Test, lastName=Test, email=admin@gmail.com, balance=1000';
+var UserString = 'firstName = John, lastName=Doe, email=example@gmail.com, balance=300; firstName=Test, lastName=Test, email=admin@gmail.com, balance=1000';
 
 var Validator = function (validationSchema) {
   this.validationSchema = validationSchema;
@@ -88,9 +88,7 @@ var UsersCollection = function(initialUsers) {
   };
 
   this.addAll = function(payload) {
-    for (var i = 0; i < payload.length; i++) {
-      this.users.push(payload[i]);
-    }
+    this.users = this.users.concat(payload);
     return this;
   };
 
@@ -107,38 +105,38 @@ var UsersCollection = function(initialUsers) {
     });
     return this;
   };
-
-  this.sortBy = function (propertyName, order) {
-    var minObject;
-    var maxObject;
-    if (order === 'desc') {
-      for (var i = 0; i < this.users.length - 1; i++) {
-        for (var j = 0; j < this.users.length - i - 1; j++) {
-          if (+(this.users[j].attributes[propertyName]) < +(this.users[j + 1].attributes[propertyName])) {
-            maxObject = this.users[j + 1];
-            this.users[j + 1] = this.users[j];
-            this.users[j] = maxObject;
-          }
-        }
+  
+  this.sortBy = function(propertyName, order){
+    var compareFn = function(firstValue, secondValue){
+      if (isFinite(firstValue.attributes[propertyName]) && isFinite(secondValue.attributes[propertyName])) {
+        firstValue = +firstValue.attributes[propertyName];
+        secondValue = +secondValue.attributes[propertyName];
+      } else {
+        firstValue = firstValue.attributes[propertyName];
+        secondValue = secondValue.attributes[propertyName];
       }
-    } else if (order === 'asc') {
-      for (i = 0; i < this.users.length - 1; i++) {
-        for (j = 0; j < this.users.length - i - 1; j++) {
-          if (+(this.users[j].attributes[propertyName]) > +(this.users[j + 1].attributes[propertyName])) {
-            minObject = this.users[j + 1];
-            this.users[j + 1] = this.users[j];
-            this.users[j] = minObject;
-          }
-        }
+      
+      if(firstValue < secondValue){
+        return -1;
       }
+      else if(firstValue > secondValue){
+        return 1;
+      }
+      else return 0;
+    };
+    
+    if(order === "asc"){
+      this.users.sort(compareFn);
+    } else if(order === "desc"){
+      this.users.sort(compareFn).reverse();
     }
-    return this;
+    return this
   };
 };
 
 var NewCollection = new UsersCollection(user1);
 console.log(NewCollection.users);
-NewCollection.add(user2);
+/*NewCollection.add(user2);
 console.log(NewCollection.users);
 NewCollection.remove(user1);
 console.log(NewCollection.users);
@@ -152,5 +150,5 @@ NewCollection.findBy('lastName', 'Sahno');
 console.log(NewCollection.users);
 NewCollection.sortBy('balance', 'asc');
 console.log(NewCollection.users);
-NewCollection.sortBy('balance', 'desc');
-console.log(NewCollection.users);
+NewCollection.sortBy('balance', 'asc');
+console.log(NewCollection.users);*/

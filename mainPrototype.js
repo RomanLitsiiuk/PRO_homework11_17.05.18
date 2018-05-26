@@ -1,8 +1,8 @@
-var UserString = 'firstName = John, lastName=Doe, email=example@gmail.com, balance=300; firstName=Test, lastName=Test, email=admin@gmail.com, balance=1000';
+var UserString = 'firstName = John, email=example@gmail.com, balance=300; firstName=Test, lastName=Test, email=admin@gmail.com, balance=1000';
 
 var Validator = function (validationSchema) {
   this.validationSchema = validationSchema;
-  this.isValid = function (attributes) {
+  Validator.prototype.isValid = function (attributes) {
     return Object.keys(this.validationSchema).every(function (key) {
       return this.validationSchema[key](attributes[key]);
     }.bind(this));
@@ -30,10 +30,10 @@ var userValidationSchema = {
 
 var User = function(attributes, validationSchema) {
   this.attributes = attributes || {};
-  this.validator = new Validator(validationSchema);
-  this.isValid = function () {
+  User.prototype.validator = new Validator(validationSchema);
+  User.prototype.isValid = function () {
     return this.validator.isValid(this.attributes);
-  }
+  };
 };
 
 user1 = new User({
@@ -68,44 +68,46 @@ var CheckedArray = stringToObjects(UserString).filter(function (user) {
 console.log(CheckedArray);
 
 var UsersCollection = function (initialUsers) {
-  if(initialUsers) {
+  if (initialUsers) {
     this.users = [].concat(initialUsers);
   } else {
     this.users = [];
   }
+};
 
-  this.add = function(payload) {
+UsersCollection.prototype = {
+  add: function(payload) {
     this.users.push(payload);
     return this;
-  };
+  },
 
-  this.remove = function(payload) {
+  remove: function(payload) {
     if(this.users.indexOf(payload) >= 0) {
       this.users.splice(this.users.indexOf(payload), 1);
       return this;
     }
-  };
+  },
 
-  this.addAll = function(payload) {
+  addAll: function(payload) {
     this.users = this.users.concat(payload);
     return this;
-  };
+  },
 
-  this.clear = function() {
+  clear: function() {
     this.users = [];
     return this;
-  };
+  },
 
-  this.findBy = function(propertyName, propertyValue) {
+  findBy: function(propertyName, propertyValue) {
     this.users = this.users.filter(function(object) {
       if (object.attributes[propertyName] === propertyValue) {
         return true;
       }
     });
     return this;
-  };
+  },
   
-  this.sortBy = function(propertyName, order){
+  sortBy: function(propertyName, order){
     var compareFn = function(firstValue, secondValue){
       if (isFinite(firstValue.attributes[propertyName]) && isFinite(secondValue.attributes[propertyName])) {
         firstValue = +firstValue.attributes[propertyName];
@@ -130,7 +132,7 @@ var UsersCollection = function (initialUsers) {
       this.users.sort(compareFn).reverse();
     }
     return this
-  };
+  }
 };
 
 var NewCollection = new UsersCollection(user1);
@@ -142,12 +144,12 @@ console.log(NewCollection.users);
 NewCollection.addAll(CheckedArray);
 console.log(NewCollection.users);
 NewCollection.clear();
-console.log(NewCollection.users);
+console.log(NewCollection.users);*/
 NewCollection.add(user1).add(user2).add(user2).addAll(CheckedArray).add(user1).add(user2);
 console.log(NewCollection.users);
-NewCollection.findBy('lastName', 'Sahno');
-console.log(NewCollection.users);
-NewCollection.sortBy('balance', 'asc');
+/*NewCollection.findBy('lastName', 'Sahno');
 console.log(NewCollection.users);
 NewCollection.sortBy('balance', 'asc');
 console.log(NewCollection.users);*/
+NewCollection.sortBy('balance', 'asc');
+console.log(NewCollection.users);
